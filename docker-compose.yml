@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  markov-train:
+    build:
+      context: ./markov/train
+      dockerfile: Dockerfile
+    image: elk-markov-train
+    volumes:
+      - ./markov/train/data/:/usr/src/app/data
+    # NOTE: train service only runs if data is not detected
+
+  markov-gen:
+    build:
+      context: ./markov/gen
+      dockerfile: Dockerfile
+    image: elk-markov-gen
+    depends_on:
+      - markov-train
+    volumes:
+      - ./markov/train/data/:/usr/src/app/data
+
+  # TODO: elasticsearch
+  # TODO: logstash
+  # TODO: kibana
+  # TODO: Java API/UI
