@@ -1,6 +1,6 @@
-# elastic-markov
+# elk-markov
 
-ElasticSearch project to ingest text generated from Markov chains.
+ELK stack project to ingest text generated from Markov chains.
 
 I made this to learn some of the ELK stack and mess around with Markov chains a little.
 
@@ -26,3 +26,4 @@ containers:
   - https://www.nltk.org/book/ch02.html
   - https://towardsdatascience.com/text-generation-with-markov-chains-an-introduction-to-using-markovify-742e6680dc33
 - https://www.gutenberg.org/files/2701/2701-h/2701-h.htm
+- https://medium.com/@sece.cosmin/docker-logs-with-elastic-stack-elk-filebeat-50e2b20a27c6
