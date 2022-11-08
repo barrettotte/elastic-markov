@@ -8,9 +8,5 @@ with open('data/model.json', 'r') as f:
     model = markovify.Text(corpus, state_size=3).from_json(f.read())
 
 while True:
-    username = 'username' # TODO:
-    sentence = model.make_short_sentence(max_chars=128)
-    geo = None # TODO:
-
-    print(sentence)
+    print(model.make_short_sentence(max_chars=128))
     time.sleep(random.randint(1, 3))

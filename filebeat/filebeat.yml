@@ -3,6 +3,12 @@ filebeat.config:
     path: ${path.config}/modules.d/*.yml
     reload.enabled: false
 
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       hints.enabled: true
+# ^ Didn't work?
+
 filebeat.inputs:
   - type: docker
     combine_partial: true
@@ -17,9 +23,20 @@ filebeat.inputs:
 processors:
   - add_docker_metadata: ~
 
-# setup filebeat to send output to logstash
 output.logstash:
   hosts: ["logstash"]
+
+# Write Filebeat own logs only to file to avoid catching them with itself in docker log files
+logging.level: info
+logging.to_files: false
+logging.to_syslog: false
+loggins.metrice.enabled: false
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+ssl.verification_mode: none
 
 http.enabled: true
 http.host: 0.0.0.0

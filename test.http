@@ -1,0 +1,15 @@
+# test ELK stack
+
+@elasticsearch=http://localhost:9200
+
+### smoke test
+GET {{elasticsearch}} HTTP/1.1
+
+### cluster health
+GET {{elasticsearch}}/_cat/health?v HTTP/1.1
+
+### Get list of nodes
+GET {{elasticsearch}}/_cat/nodes?v HTTP/1.1
+
+### Get indices
+GET {{elasticsearch}}/_cat/indices?format=json&pretty HTTP/1.1

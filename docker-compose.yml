@@ -7,42 +7,53 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      # - type: volume
+      #   source: elasticsearch
+      #   target: /usr/share/elasticsearch/data
     networks:
       - elk-markov
     healthcheck:
       test: "curl -f http://localhost:9200 || exit 1"
     restart: unless-stopped
-  
+
   logstash:
     image: docker.elastic.co/logstash/logstash:7.17.7
     container_name: logstash
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
     depends_on:
       - elasticsearch
     ports:
-      - "5044:5044"
+      - "5044:5044"  # default beats
+      - "9600:9600"  # web API
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline/
+      # - ./logstash/pipeline:/usr/share/logstash/pipeline/
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     networks:
       - elk-markov
     healthcheck:
       test: "curl -f http://localhost:9600 || exit 1"
     restart: unless-stopped
-  
+
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.7
     container_name: kibana
     depends_on:
+      - elasticsearch
       - logstash
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - LOGGING_QUIET=true
+    # environment:
+    #   - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "5601:5601"
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     networks:
       - elk-markov
     healthcheck:
@@ -88,7 +99,7 @@ services:
     depends_on:
       - filebeat
     volumes:
-      - ./markov/train/data/:/usr/src/app/data
+      - ./markov/train/data/:/usr/src/app/data:ro
     networks:
       - elk-markov
     restart: unless-stopped
@@ -96,3 +107,6 @@ services:
 networks:
   elk-markov:
     driver: bridge
+
+# volumes:
+#   elasticsearch:
