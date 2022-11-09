@@ -17,7 +17,7 @@ services:
       #   source: elasticsearch
       #   target: /usr/share/elasticsearch/data
     networks:
-      - elk-markov
+      - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:9200 || exit 1"
     restart: unless-stopped
@@ -37,7 +37,7 @@ services:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     networks:
-      - elk-markov
+      - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:9600 || exit 1"
     restart: unless-stopped
@@ -55,7 +55,7 @@ services:
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     networks:
-      - elk-markov
+      - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:5601 || exit 1"
     restart: unless-stopped
@@ -64,7 +64,7 @@ services:
     build:
       context: ./filebeat
       dockerfile: Dockerfile
-    image: elk-markov-filebeat
+    image: elastic-markov-filebeat
     container_name: filebeat
     depends_on:
       - elasticsearch
@@ -73,39 +73,39 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/containers:/usr/share/dockerlogs/data:ro
     networks:
-      - elk-markov
+      - elastic-markov
     restart: 'no'
 
   markov-train:
     build:
       context: ./markov/train
       dockerfile: Dockerfile
-    image: elk-markov-train
+    image: elastic-markov-train
     container_name: markov-train
     depends_on:
       - filebeat
     volumes:
       - ./markov/train/data/:/usr/src/app/data
     networks:
-      - elk-markov
+      - elastic-markov
     # NOTE: train service only runs if data is not detected
 
   markov-gen:
     build:
       context: ./markov/gen
       dockerfile: Dockerfile
-    image: elk-markov-gen
+    image: elastic-markov-gen
     container_name: markov-gen
     depends_on:
       - filebeat
     volumes:
       - ./markov/train/data/:/usr/src/app/data:ro
     networks:
-      - elk-markov
+      - elastic-markov
     restart: unless-stopped
 
 networks:
-  elk-markov:
+  elastic-markov:
     driver: bridge
 
 # volumes:

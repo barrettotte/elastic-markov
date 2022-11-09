@@ -1,4 +1,4 @@
-# https://github.com/elastic/kibana/blob/main/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
+# https://github.com/elastic/kibana/blob/main/config/kibana.yml
 server.name: kibana
 server.host: 0.0.0.0
 

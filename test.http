@@ -1,4 +1,4 @@
-# test ELK stack
+# test elastic stack
 
 @elasticsearch=http://localhost:9200
 
@@ -13,3 +13,6 @@ GET {{elasticsearch}}/_cat/nodes?v HTTP/1.1
 
 ### Get indices
 GET {{elasticsearch}}/_cat/indices?format=json&pretty HTTP/1.1
+
+
+# TODO: /{index}/_search?size=100
