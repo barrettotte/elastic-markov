@@ -1,5 +1,6 @@
 # https://github.com/elastic/elasticsearch/blob/main/distribution/docker/src/docker/config/elasticsearch.yml
-cluster.name: "docker-cluster"
+cluster.name: elastic-markov
+node.name: node-1
 network.host: 0.0.0.0
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html

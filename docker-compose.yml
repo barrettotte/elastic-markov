@@ -5,6 +5,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.7
     container_name: elasticsearch
+    restart: unless-stopped
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -13,18 +14,19 @@ services:
       - "9300:9300"
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      # - type: volume
-      #   source: elasticsearch
-      #   target: /usr/share/elasticsearch/data
+      # - ./elasticsearch/data:/usr/share/elasticsearch/data
     networks:
       - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:9200 || exit 1"
-    restart: unless-stopped
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.17.7
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile
+    image: elastic-markov-logstash
     container_name: logstash
+    restart: unless-stopped
     environment:
       - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
     depends_on:
@@ -32,24 +34,21 @@ services:
     ports:
       - "5044:5044"  # default beats
       - "9600:9600"  # web API
-    volumes:
-      # - ./logstash/pipeline:/usr/share/logstash/pipeline/
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     networks:
       - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:9600 || exit 1"
-    restart: unless-stopped
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.7
     container_name: kibana
+    restart: unless-stopped
+    environment:
+      - setup.kibana.host=kibana:5601
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
+      - strict.perms=false
     depends_on:
       - elasticsearch
-      - logstash
-    # environment:
-    #   - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "5601:5601"
     volumes:
@@ -58,7 +57,6 @@ services:
       - elastic-markov
     healthcheck:
       test: "curl -f http://localhost:5601 || exit 1"
-    restart: unless-stopped
 
   filebeat:
     build:
@@ -66,15 +64,19 @@ services:
       dockerfile: Dockerfile
     image: elastic-markov-filebeat
     container_name: filebeat
+    restart: unless-stopped
     depends_on:
       - elasticsearch
       - logstash
+    ports:
+      - "5066:5066"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/containers:/usr/share/dockerlogs/data:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
     networks:
       - elastic-markov
-    restart: 'no'
+    healthcheck:
+      test: "curl -f http://localhost:5066 || exit 1"
 
   markov-train:
     build:
@@ -82,13 +84,14 @@ services:
       dockerfile: Dockerfile
     image: elastic-markov-train
     container_name: markov-train
+    restart: 'no'
     depends_on:
       - filebeat
     volumes:
       - ./markov/train/data/:/usr/src/app/data
     networks:
       - elastic-markov
-    # NOTE: train service only runs if data is not detected
+    # NOTE: markov-train only runs once; exits if model+corpus already generated
 
   markov-gen:
     build:
@@ -96,17 +99,14 @@ services:
       dockerfile: Dockerfile
     image: elastic-markov-gen
     container_name: markov-gen
+    restart: unless-stopped
     depends_on:
       - filebeat
     volumes:
       - ./markov/train/data/:/usr/src/app/data:ro
     networks:
       - elastic-markov
-    restart: unless-stopped
 
 networks:
   elastic-markov:
     driver: bridge
-
-# volumes:
-#   elasticsearch:

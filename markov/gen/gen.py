@@ -2,10 +2,11 @@ import logging
 import markovify
 import os
 import random
+import sys
 import time
 from random_username.generate import generate_username
 
-logging.basicConfig(level=os.environ.get('LOGLEVEL', 'INFO'), format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(stream=sys.stdout, level=os.environ.get('LOGLEVEL', 'INFO'), format='%(asctime)s %(levelname)s %(message)s')
 
 def generate_ipv4():
     return '.'.join(str(random.randint(0, 255)) for _ in range(4))
