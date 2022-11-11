@@ -1,0 +1,1 @@
+filebeat -e --strict.perms=false

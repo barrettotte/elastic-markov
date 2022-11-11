@@ -1,2 +1,2 @@
 # prevent logstash from spamming filebeat
-logstash > /dev/null
+logstash #> /dev/null

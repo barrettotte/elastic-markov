@@ -1,9 +1,7 @@
 FROM docker.elastic.co/beats/filebeat:7.17.7
 
-COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+COPY entrypoint.sh entrypoint.sh
 
 USER root
 
-RUN mkdir -p /usr/share/filebeat/dockerlogs
-RUN chown -R root /usr/share/filebeat/
-RUN chmod -R go-w /usr/share/filebeat/
+CMD /bin/sh entrypoint.sh

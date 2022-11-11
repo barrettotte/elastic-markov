@@ -11,14 +11,17 @@ Markov.stdout => FileBeat => LogStash => ElasticSearch <= Kibana
 
 - **Markov** outputs random sentences, usernames, and IPv4 addresses to stdout. 
   The random sentences are generated from a Markov chain trained on all sentences from Moby Dick
-- **FileBeat** ingests all stdout/stderr from all containers in network and sends to LogStash
-- **LogStash** accepts FileBeat input, processes it, and pushes to ElasticSearch
+- **FileBeat** ingests all stdout/stderr from `markov-gen` container and sends to LogStash
+- **LogStash** accepts FileBeat input, processes/enriches it, and pushes to ElasticSearch.
+  Specifically, the random IPv4 addresses are enriched with GeoIP data.
 - **ElasticSearch** stores and indexes data
-- **Kibana** provides visualization into ElasticSearch data and other things
+- **Kibana** provides visualization over ElasticSearch data and other things
 
 ## Run
 
 `docker compose -f docker-compose.yml up --build` or `./start.sh`
+
+Note: Logstash takes forever to start...just keep an eye on the logstash logs
 
 ## Kibana
 
@@ -38,6 +41,7 @@ I won't remember where some of this stuff is...
   - https://github.com/deviantony/docker-elk
   - https://www.youtube.com/playlist?list=PL_mJOmq4zsHZYAyK606y7wjQtC0aoE6Es
   - https://www.javainuse.com/elasticsearch/filebeat-elk
+  - https://github.com/elastic/elasticsearch/blob/main/libs/grok/src/main/resources/patterns/legacy/grok-patterns
 - Markov chains
   - https://www.kdnuggets.com/2019/11/markov-chains-train-text-generation.html
   - https://www.nltk.org/book/ch02.html
