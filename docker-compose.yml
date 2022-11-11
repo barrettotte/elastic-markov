@@ -104,6 +104,8 @@ services:
       - filebeat
     volumes:
       - ./markov/train/data/:/usr/src/app/data:ro
+    labels:
+      co.elastic.logs/enabled: true
     networks:
       - elastic-markov
 

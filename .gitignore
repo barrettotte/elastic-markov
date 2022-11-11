@@ -1,1 +1,2 @@
-markov/train/data/
+markov/train/data/corpus.txt
+markov/train/data/model.json
