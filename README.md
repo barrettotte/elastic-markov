@@ -20,6 +20,25 @@ markov-gen.stdout => FileBeat => LogStash => ElasticSearch <= Kibana
 
 Note: Logstash takes way longer to start than you'd think...just keep an eye on the logstash logs
 
+## Logs
+
+Format: `{timestamp} {log level} {username} {ipv4} {sentence}`
+
+Sample logs from `markov-gen`, generated from a Markov chain trained on Moby Dick.
+
+```txt
+2022-11-11 19:25:18,226 INFO gloomyLlama9 218.93.249.20 I might proceed with several more examples, one way or other, has this Siamese connexion with a plurality of other mortals.
+2022-11-11 19:25:19,244 INFO peskyBurritos4 12.171.13.9 For, spite of her leak, and spite of our hootings, for a long time.
+2022-11-11 19:25:22,261 INFO awedThrush5 239.5.175.122 But by those clanking links, the vast corpse itself, not the ship, is to be found, the aliment of the right whale.
+2022-11-11 19:25:24,277 INFO cruelCordial2 246.153.8.47 Now when I looked about the quarter-deck, for some one lone whale on the outskirts of the shoal.
+2022-11-11 19:25:25,309 INFO debonairLard4 9.193.18.31 As many know, he wrote the history of his own sovereign will and pleasure.
+2022-11-11 19:25:27,325 INFO cruelBagels2 147.186.63.244 But the time of capture.
+2022-11-11 19:25:30,328 INFO needfulLizard5 89.48.243.197 Was it that this old carpenter had been thrusting his shavings into the furnace throughout the passage.
+2022-11-11 19:25:31,333 INFO amazedShads5 52.1.91.250 Almost universally, a lone whale as a civilized dish, is his exceeding richness.
+2022-11-11 19:25:33,342 INFO unhappyCrackers3 90.116.157.38 Then it darted a thousand feet straight up into the mizzen rigging, like three quarters of the stuff of the whale's head?
+2022-11-11 19:25:35,354 INFO spiritedCheese5 224.255.241.75 Nor can any son of mortal woman, for the first time eye thee, no matter how many in the ship's run for salvation.
+```
+
 ## Kibana
 
 I won't remember where some of this stuff is...
