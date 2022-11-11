@@ -27,6 +27,7 @@ I won't remember where some of this stuff is...
 - Home - http://localhost:5601
 - Index Management - http://localhost:5601/app/management/data/index_management/indices
 - Dev tools - http://localhost:5601/app/dev_tools#/console
+  - Grok debugger - http://localhost:5601/app/dev_tools#/grokdebugger
 
 ## References
 

@@ -8,7 +8,8 @@ filebeat.autodiscover:
     # Fetch all docker container logs
     - type: docker
       hints.enabled: true
-      hints.default_config.enabled: false
+      hints.default_config.enabled: false 
+      # Note: when disabled, log ingest driven by container label co.elastic.logs/enabled
 
 processors:
   - add_docker_metadata: ~
